@@ -3,10 +3,10 @@
 #include "../include/header.hpp"
 
 
-File::File(std::string pam, std::string fin): 
-    broker(pam), 
-    account(fin.substr(8, 8)), 
-    num(1), 
+File::File(std::string pam, std::string fin):
+    broker(pam),
+    account(fin.substr(8, 8)),
+    num(1),
     date(fin.substr(17, 8)) {
 }
 
@@ -103,16 +103,16 @@ int mainVirtual(int argc, char* argv[]) {
     std::vector<File> files;
     processDirectory(p, files);
     for (auto cur : files) {
-        std::cout << "\n" << cur; 
+        std::cout << "\n" << cur;
    }
     return 0;
 }
 
 
 std::ostream& operator<<(std::ostream& out, const File& file) {
-    out << "broker:" << file.broker 
+    out << "broker:" << file.broker
         << " account:" << file.account
-        << " files:" << file.num 
+        << " files:" << file.num
         << " lastdate:" << file.date;
     return out;
 }
