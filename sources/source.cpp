@@ -2,36 +2,40 @@
 
 #include "../include/header.hpp"
 
-
 File::File(std::string pam, std::string fin):
     broker(pam),
-    account(fin.substr(8, 8)),
+    account(fin.substr(LEN_OF_BALANCE, LEN_OF_ACCOUNT)),
     num(1),
-    date(fin.substr(17, 8)) {
+    date(fin.substr(LEN_OF_BALANCE + LEN_OF_ACCOUNT + 1,
+        LEN_OF_DATE)) {
 }
 
 
 bool checkName(std::string filename) {
-    if (filename.length() != 29) {
+    if (filename.length() != MAX_LENGTH) {
         return true;
     }
-    if (filename.substr(0, 8) != "balance_") {
+    if (filename.substr(0, LEN_OF_BALANCE) != "balance_") {
         return true;
     }
-    for (size_t i = 8; i < 16; i++) {
+    for (size_t i = LEN_OF_BALANCE;
+        i < LEN_OF_BALANCE + LEN_OF_ACCOUNT; i++) {
         if (filename[i] < '0' || filename[i] > '9') {
             return true;
         }
     }
-    if (filename[16] != '_') {
+    if (filename[LEN_OF_BALANCE + LEN_OF_ACCOUNT] != '_') {
         return true;
     }
-    for (size_t i = 17; i < 25; i++) {
+    for (size_t i = LEN_OF_BALANCE + LEN_OF_ACCOUNT +1;
+        i < LEN_OF_BALANCE + LEN_OF_ACCOUNT + LEN_OF_DATE;
+        i++) {
         if (filename[i] < '0' || filename[i] > '9') {
             return true;
         }
     }
-    if (filename[25] != '.') {
+    if (filename[LEN_OF_BALANCE + LEN_OF_ACCOUNT
+        + LEN_OF_DATE + 1] != '.') {
         return true;
     }
     return false;
@@ -39,9 +43,9 @@ bool checkName(std::string filename) {
 
 
 bool checkDate(int year, int month, int day) {
-    if (year < 1970 || year > 2019) { return true; }
-    if (month < 0 || month > 12) { return true; }
-    if (day < 0) { return true; }
+    if (year < MIN_YEAR || year > MAX_YEAR) { return true; }
+    if (month < MIN_MONTH || month > MAX_MONTH) { return true; }
+    if (day < MIN_DAY) { return true; }
     if (month == 4 || month == 6 || month == 9 || month == 11) {
         if (day > 30) { return true; }
     } else if (month == 2) {
@@ -69,10 +73,11 @@ void processDirectory(const path& p, std::vector<File>& pam) {
         if (boost::filesystem::is_regular_file(x.path())) {
             std::string filename = x.path().filename().string();
             if (checkName(filename)) { continue; }
-            int year = 1000 * (filename[17] - 48) + 10 * (filename[18] - 48) +
-                10 * (filename[19] - 48) + filename[20] - 48;
-            int month = 10 * (filename[21] - 48) + filename[22] - 48;
-            int day = 10 * (filename[23] - 48) + filename[24] - 48;
+            size_t numb = LEN_OF_BALANCE + LEN_OF_ACCOUNT + 1;
+            int year = 1000 * (filename[numb] - 48) + 10 * (filename[numb + 1] - 48) +
+                10 * (filename[numb + 2] - 48) + filename[numb + 3] - 48;
+            int month = 10 * (filename[numb + 4] - 48) + filename[numb + 5] - 48;
+            int day = 10 * (filename[numb + 6] - 48) + filename[numb + 7] - 48;
             if (checkDate(year, month, year)) { continue; }
             std::cout << p.filename().string() << " " << filename << std::endl;
             File newF(p.filename().string(), filename);
