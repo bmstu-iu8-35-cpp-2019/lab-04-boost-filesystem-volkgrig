@@ -74,10 +74,14 @@ void processDirectory(const path& p, std::vector<File>& pam) {
             std::string filename = x.path().filename().string();
             if (checkName(filename)) { continue; }
             size_t numb = LEN_OF_BALANCE + LEN_OF_ACCOUNT + 1;
-            int year = 1000 * (filename[numb] - 48) + 10 * (filename[numb + 1] - 48) +
-                10 * (filename[numb + 2] - 48) + filename[numb + 3] - 48;
-            int month = 10 * (filename[numb + 4] - 48) + filename[numb + 5] - 48;
-            int day = 10 * (filename[numb + 6] - 48) + filename[numb + 7] - 48;
+            int year = 1000 * (filename[numb] - 48) +
+                10 * (filename[numb + 1] - 48) +
+                10 * (filename[numb + 2] - 48) +
+                filename[numb + 3] - 48;
+            int month = 10 * (filename[numb + 4] - 48)
+                + filename[numb + 5] - 48;
+            int day = 10 * (filename[numb + 6] - 48)
+                + filename[numb + 7] - 48;
             if (checkDate(year, month, year)) { continue; }
             std::cout << p.filename().string() << " " << filename << std::endl;
             File newF(p.filename().string(), filename);
